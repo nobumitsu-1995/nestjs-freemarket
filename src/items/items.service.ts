@@ -1,8 +1,46 @@
 import { Injectable } from '@nestjs/common';
+import { Item } from './items.model';
 
 @Injectable()
 export class ItemsService {
-  findAll() {
-    return 'this is items service';
+  private items: Item[] = [
+    {
+      id: 'test1',
+      name: 'string',
+      price: 100,
+      description: 'string',
+      status: 'ON_SALE',
+    },
+  ];
+
+  findAll(): Item[] {
+    return this.items;
+  }
+
+  findById(id: string): Item {
+    const items = this.items.find((item) => item.id === id);
+    if (!items) {
+      throw new Error('Item not found');
+    }
+    return items;
+  }
+
+  create(item: Item): Item {
+    this.items.push(item);
+    return item;
+  }
+
+  updateStatus(id: string): Item {
+    const item = this.findById(id);
+    item.status = 'SOLD_OUT';
+    return item;
+  }
+
+  delete(id: string): void {
+    const index = this.items.findIndex((item) => item.id === id);
+    if (index === -1) {
+      throw new Error('Item not found');
+    }
+    this.items.splice(index, 1);
   }
 }
